@@ -130,9 +130,19 @@ function SecuritySection() {
               <span className="text-sm text-gray-300">Enterprise Security</span>
             </div>
 
-            <h2 className="font-display text-4xl sm:text-5xl font-bold mb-6">
-              <span className="text-white">Security You Can</span>{' '}
-              <span className="text-green-400">Trust</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.15] tracking-tight mb-6">
+              <span
+                className="text-white italic font-light block"
+                style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+              >
+                Security You Can
+              </span>
+              <span
+                className="text-white font-extrabold block mt-1"
+                style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+              >
+                <span className="text-green-400">Trust</span>
+              </span>
             </h2>
 
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -182,19 +192,33 @@ function SecuritySection() {
       </section>
 
       {/* Container Scroll Section for Zero-Trust Security Console */}
-      <section className="relative py-24 overflow-hidden bg-dark-900 rounded-[2rem] md:rounded-[3rem] border border-white/5 mx-4 md:mx-8 my-12 shadow-2xl">
+      <section className="relative py-24 overflow-hidden bg-white rounded-[2rem] md:rounded-[3rem] border border-black/5 mx-4 md:mx-8 my-12 shadow-2xl">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-green-500/30 to-transparent" />
           <div className="absolute inset-0 mesh-bg opacity-30" />
+        </div>
+        
+        {/* Experimental type poster background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center pointer-events-none z-0 opacity-5 overflow-hidden">
+          <h1 className="text-[12vw] font-black text-black whitespace-nowrap uppercase tracking-tighter mix-blend-overlay">
+            University and students
+          </h1>
         </div>
         <div className="relative z-10 flex flex-col overflow-hidden w-full">
           <ContainerScroll
             titleComponent={
               <>
-                <h2 className="text-4xl font-semibold text-white mb-2">
-                  Shielded Infrastructure
-                  <br />
-                  <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none gradient-text">
+                <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-black mb-2 relative z-10">
+                  <span
+                    className="italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    Shielded Infrastructure
+                  </span>
+                  <span
+                    className="text-4xl md:text-[6rem] font-extrabold block mt-2 leading-none gradient-text"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
                     Zero-Trust Console
                   </span>
                 </h2>
@@ -211,21 +235,37 @@ function SecuritySection() {
 
 function App() {
   return (
-    <div className="min-h-screen bg-neutral-950 text-white overflow-x-hidden">
-      <Navigation />
-      <main>
-        <Hero />
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-x-hidden transition-colors duration-300 relative">
+      {/* Grid Pattern Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid-bg" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" className="stroke-neutral-800/30 dark:stroke-white/[0.15]" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid-bg)" />
+        </svg>
+        {/* Radial fade so grid doesn't feel too uniform */}
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-50/0 via-neutral-50/50 to-neutral-50/80 dark:from-neutral-950/0 dark:via-neutral-950/50 dark:to-neutral-950/80" />
+      </div>
 
-        <Features />
-        <DigitalTwin />
-        <FacultyPortal />
-        <StudentPortal />
-        <MobileShowcase />
-        <SecuritySection />
-        <Analytics />
-        <FutureVision />
-      </main>
-      <Footer />
+      <div className="relative z-10">
+        <Navigation />
+        <main>
+          <Hero />
+
+          <Features />
+          <DigitalTwin />
+          <FacultyPortal />
+          <StudentPortal />
+          <MobileShowcase />
+          <SecuritySection />
+          <Analytics />
+          <FutureVision />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }

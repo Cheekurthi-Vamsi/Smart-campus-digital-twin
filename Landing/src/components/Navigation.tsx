@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Menu, X, GraduationCap, ChevronDown } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -57,27 +58,42 @@ export default function Navigation() {
         style={{ paddingTop: isScrolled ? '12px' : '20px', transition: 'padding-top 0.4s ease' }}
       >
         <div
-          className={`pointer-events-auto flex items-center gap-1 rounded-full transition-all duration-500 ${
+          className={`pointer-events-auto flex items-center gap-1 rounded-full transition-all duration-500 relative overflow-hidden ${
             isScrolled
-              ? 'px-3 py-2 shadow-2xl'
+              ? 'px-3 py-2'
               : 'px-4 py-2.5'
           }`}
           style={{
             maxWidth: '1100px',
             width: '100%',
             background: isScrolled
-              ? 'rgba(3, 7, 18, 0.45)'
-              : 'rgba(15, 23, 42, 0.15)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
+              ? 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 50%, rgba(200,220,255,0.08) 100%)'
+              : 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(200,220,255,0.05) 100%)',
+            backdropFilter: 'blur(40px) saturate(1.8)',
+            WebkitBackdropFilter: 'blur(40px) saturate(1.8)',
             border: isScrolled
-              ? '1px solid rgba(0, 229, 255, 0.15)'
+              ? '1px solid rgba(255, 255, 255, 0.18)'
               : '1px solid rgba(255, 255, 255, 0.08)',
             boxShadow: isScrolled
-              ? '0 8px 32px rgba(0,0,0,0.4), 0 0 0 0.5px rgba(0,229,255,0.1), inset 0 1px 0 rgba(255,255,255,0.05)'
-              : '0 4px 24px rgba(0,0,0,0.15)',
+              ? '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -1px 1px rgba(255,255,255,0.05)'
+              : '0 4px 24px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.15)',
           }}
         >
+          {/* Liquid glass prismatic highlight */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.15) 35%, rgba(0,229,255,0.06) 42%, rgba(123,97,255,0.06) 48%, rgba(255,255,255,0.1) 55%, transparent 70%)',
+              mixBlendMode: 'overlay',
+            }}
+          />
+          {/* Top edge light refraction */}
+          <div
+            className="absolute top-0 left-[10%] right-[10%] h-[1px] rounded-full pointer-events-none"
+            style={{
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), rgba(0,229,255,0.2), rgba(123,97,255,0.15), rgba(255,255,255,0.3), transparent)',
+            }}
+          />
           {/* Logo */}
           <motion.a
             href="#home"
@@ -144,6 +160,7 @@ export default function Navigation() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-2 ml-1">
+            <ThemeToggle />
             <motion.a
               href="#login"
               className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/5"
@@ -224,12 +241,15 @@ export default function Navigation() {
                     CampusTwin
                   </span>
                 </div>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               {/* Drawer links */}

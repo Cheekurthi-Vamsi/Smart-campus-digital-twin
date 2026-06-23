@@ -237,9 +237,19 @@ export default function Analytics() {
               <span className="text-sm text-gray-300">AI Analytics</span>
             </div>
 
-            <h2 className="font-display text-4xl sm:text-5xl font-bold mb-6">
-              <span className="text-white">Data-Driven</span>{' '}
-              <span className="gradient-text">Insights</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.15] tracking-tight mb-6">
+              <span
+                className="text-white italic font-light block"
+                style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+              >
+                Data-Driven
+              </span>
+              <span
+                className="text-white font-extrabold block mt-1"
+                style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+              >
+                <span className="gradient-text">Insights</span>
+              </span>
             </h2>
 
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -311,10 +321,17 @@ export default function Analytics() {
           <ContainerScroll
             titleComponent={
               <>
-                <h2 className="text-4xl font-semibold text-white mb-2">
-                  Campus Analytics
-                  <br />
-                  <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none gradient-text">
+                <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-white mb-2 relative z-10">
+                  <span
+                    className="italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    Campus Analytics
+                  </span>
+                  <span
+                    className="text-4xl md:text-[6rem] font-extrabold block mt-2 leading-none gradient-text"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
                     Visual Intelligence
                   </span>
                 </h2>

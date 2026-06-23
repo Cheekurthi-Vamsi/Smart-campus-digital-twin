@@ -165,12 +165,13 @@ export default function FutureVision() {
               <span className="text-sm text-gray-300">Coming Soon</span>
             </motion.div>
 
-            <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold mb-8">
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.15] tracking-tight mb-8">
               <motion.span
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-white block"
+                className="text-white italic font-light block"
+                style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
               >
                 The Future of
               </motion.span>
@@ -179,7 +180,8 @@ export default function FutureVision() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="gradient-text block"
+                className="gradient-text font-extrabold block mt-1"
+                style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
               >
                 Smart Universities
               </motion.span>
@@ -202,18 +204,32 @@ export default function FutureVision() {
       </section>
 
       {/* Container Scroll Section for Future Vision Cards */}
-      <section className="relative py-24 overflow-hidden bg-dark-900 rounded-[2rem] md:rounded-[3rem] border border-white/5 mx-4 md:mx-8 my-12 shadow-2xl">
+      <section className="relative py-24 overflow-hidden bg-white rounded-[2rem] md:rounded-[3rem] border border-black/5 mx-4 md:mx-8 my-12 shadow-2xl">
         <div className="absolute inset-0 bg-dark-900">
           <CinematicBackground />
+        </div>
+        
+        {/* Experimental type poster background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center pointer-events-none z-0 opacity-5 overflow-hidden">
+          <h1 className="text-[12vw] font-black text-black whitespace-nowrap uppercase tracking-tighter mix-blend-overlay">
+            University and students
+          </h1>
         </div>
         <div className="relative z-10 flex flex-col overflow-hidden w-full">
           <ContainerScroll
             titleComponent={
               <>
-                <h2 className="text-4xl font-semibold text-white mb-2">
-                  Visionary Future
-                  <br />
-                  <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none gradient-text">
+                <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-black mb-2 relative z-10">
+                  <span
+                    className="italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    Visionary Future
+                  </span>
+                  <span
+                    className="text-4xl md:text-[6rem] font-extrabold block mt-2 leading-none gradient-text"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
                     Autonomic Campus
                   </span>
                 </h2>

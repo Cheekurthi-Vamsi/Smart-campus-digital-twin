@@ -20,13 +20,20 @@ export default function ScrollShowcase({ title, highlight, children }: ScrollSho
         <ContainerScroll
           titleComponent={
             <>
-              <h2 className="text-4xl font-semibold text-white mb-2">
-                {title}
-                <br />
-                <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none gradient-text">
-                  {highlight}
-                </span>
-              </h2>
+                <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-white mb-2 relative z-10">
+                  <span
+                    className="italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    {title}
+                  </span>
+                  <span
+                    className="text-4xl md:text-[6rem] font-extrabold block mt-2 leading-none gradient-text"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
+                    {highlight}
+                  </span>
+                </h2>
             </>
           }
         >

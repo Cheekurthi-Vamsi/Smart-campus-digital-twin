@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,9 +10,13 @@
   --color-accent: #6D28D9;
   --color-cyan: #00FFD1;
   --color-pink: #FF00E5;
-  --color-dark-900: #030712;
-  --color-dark-800: #0F172A;
-  --color-dark-700: #111827;
+
+  /* Default (Light Mode) values */
+  --color-dark-900: #ffffff;
+  --color-dark-800: #f8fafc;
+  --color-dark-700: #f1f5f9;
+  --color-dark-600: #e2e8f0;
+  --color-dark-500: #cbd5e1;
 
   /* Aurora Background variables */
   --white: #fff;
@@ -23,6 +27,15 @@
   --blue-300: #93c5fd;
   --violet-200: #ddd6fe;
   --blue-400: #60a5fa;
+}
+
+/* Dark Mode values */
+.dark {
+  --color-dark-900: #030712;
+  --color-dark-800: #0F172A;
+  --color-dark-700: #111827;
+  --color-dark-600: #1E293B;
+  --color-dark-500: #334155;
 }
 
 * {
@@ -37,8 +50,7 @@ html {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--color-dark-900);
-  color: white;
+  @apply bg-neutral-50 text-neutral-900 dark:bg-dark-900 dark:text-white transition-colors duration-300;
   overflow-x: hidden;
   line-height: 1.6;
 }
@@ -68,27 +80,15 @@ body {
 
 @layer components {
   .glass {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-[20px] border border-black/10 dark:border-white/10;
   }
 
   .glass-dark {
-    background: rgba(3, 7, 18, 0.7);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    @apply bg-gray-100/70 dark:bg-gray-950/70 backdrop-blur-[30px] border border-black/5 dark:border-white/5;
   }
 
   .glass-card {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(17, 24, 39, 0.6) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    @apply bg-gradient-to-br from-white/80 to-gray-50/60 dark:from-slate-900/80 dark:to-gray-900/60 backdrop-blur-[20px] border border-black/10 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)];
   }
 
   .gradient-text {
@@ -154,26 +154,92 @@ body {
 
   .btn-primary {
     @apply px-8 py-4 rounded-full font-semibold text-white relative overflow-hidden transition-all duration-300;
-    background: linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%);
+    background: linear-gradient(135deg, rgba(0,229,255,0.25) 0%, rgba(123,97,255,0.2) 50%, rgba(0,229,255,0.15) 100%);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(0, 229, 255, 0.25);
     box-shadow:
-      0 4px 20px rgba(0, 229, 255, 0.3),
-      0 8px 40px rgba(123, 97, 255, 0.2);
+      0 4px 20px rgba(0, 229, 255, 0.15),
+      0 8px 40px rgba(123, 97, 255, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.25),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.2) 35%, rgba(0,229,255,0.1) 42%, rgba(123,97,255,0.08) 48%, rgba(255,255,255,0.15) 55%, transparent 70%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15%;
+    right: 15%;
+    height: 1px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), rgba(0,229,255,0.3), rgba(255,255,255,0.4), transparent);
+    pointer-events: none;
   }
 
   .btn-primary:hover {
     transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(0,229,255,0.35) 0%, rgba(123,97,255,0.3) 50%, rgba(0,229,255,0.25) 100%);
+    border-color: rgba(0, 229, 255, 0.4);
     box-shadow:
-      0 6px 30px rgba(0, 229, 255, 0.4),
-      0 12px 50px rgba(123, 97, 255, 0.3);
+      0 6px 30px rgba(0, 229, 255, 0.25),
+      0 12px 50px rgba(123, 97, 255, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.08);
   }
 
   .btn-secondary {
-    @apply px-8 py-4 rounded-full font-semibold text-white relative overflow-hidden transition-all duration-300 glass border-white/20;
+    @apply px-8 py-4 rounded-full font-semibold relative overflow-hidden transition-all duration-300;
+    color: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 50%, rgba(200,220,255,0.06) 100%);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.06),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .btn-secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(105deg, transparent 25%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.06) 55%, transparent 65%);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .btn-secondary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15%;
+    right: 15%;
+    height: 1px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), rgba(255,255,255,0.25), transparent);
+    pointer-events: none;
   }
 
   .btn-secondary:hover {
-    @apply border-primary/50;
-    box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
+    border-color: rgba(0, 229, 255, 0.25);
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.06) 50%, rgba(200,220,255,0.1) 100%);
+    box-shadow:
+      0 6px 30px rgba(0, 229, 255, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.25),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.08);
   }
 
   .floating-card {
@@ -319,5 +385,56 @@ body {
   .mask-gradient-fade {
     mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  /* Light mode overrides for hardcoded dark classes */
+  :root:not(.dark) .text-white {
+    color: #0f172a;
+  }
+  :root:not(.dark) .text-gray-400 {
+    color: #475569;
+  }
+  :root:not(.dark) .text-gray-300 {
+    color: #334155;
+  }
+  :root:not(.dark) .border-white\/5 {
+    border-color: rgba(0, 0, 0, 0.05);
+  }
+  :root:not(.dark) .border-white\/10 {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  :root:not(.dark) .border-white\/20 {
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+  :root:not(.dark) .bg-white\/5 {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  :root:not(.dark) .bg-white\/10 {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  :root:not(.dark) .hover\:bg-white\/5:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  :root:not(.dark) .hover\:bg-white\/10:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Support dark/light mode for container-scroll sections */
+  .dark section.bg-white {
+    background-color: var(--color-dark-800) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  .dark section.bg-white .text-black {
+    color: #ffffff !important;
+  }
+  .dark section.bg-white h1.mix-blend-overlay {
+    color: #ffffff !important;
+    opacity: 0.08;
+  }
+
+  /* Responsive SVG strokes for grid backgrounds */
+  :root:not(.dark) svg polygon[stroke="white"],
+  :root:not(.dark) svg path[stroke="white"] {
+    stroke: rgba(0, 0, 0, 0.15) !important;
   }
 }

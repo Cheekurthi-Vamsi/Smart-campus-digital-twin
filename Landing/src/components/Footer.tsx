@@ -31,7 +31,7 @@ export default function Footer() {
   const isInView = useInView(containerRef, { once: true, margin: '-50px' });
 
   return (
-    <footer ref={containerRef} id="contact" className="relative pt-32 pb-8 overflow-hidden">
+    <footer ref={containerRef} id="contact" className="relative pt-32 pb-8 overflow-hidden rounded-[2rem] md:rounded-[3rem] border border-black/5 dark:border-white/5 mx-4 md:mx-8 my-12 shadow-2xl">
       <div className="absolute inset-0 bg-dark-900">
         <div className="absolute inset-0 mesh-bg opacity-40" />
         <div className="absolute top-0 left-1/4 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
@@ -69,10 +69,19 @@ export default function Footer() {
           className="mb-16"
         >
           <div className="max-w-2xl mx-auto text-center mb-16">
-            <h2 className="font-display text-4xl sm:text-5xl font-bold mb-6">
-              <span className="text-white">Ready to Transform</span>
-              <br />
-              <span className="gradient-text">Your Campus?</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.15] tracking-tight mb-6">
+              <span
+                className="text-white italic font-light block"
+                style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+              >
+                Ready to Transform
+              </span>
+              <span
+                className="text-white font-extrabold block mt-1"
+                style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+              >
+                Your <span className="gradient-text">Campus?</span>
+              </span>
             </h2>
             <p className="text-gray-400 mb-8">
               Join 150+ universities already using Smart Campus Digital Twin to create

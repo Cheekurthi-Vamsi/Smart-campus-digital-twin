@@ -247,130 +247,135 @@ export default function Hero() {
 
   return (
     <>
-      <BeamsBackground
+      <section
         ref={containerRef}
-        className="relative min-h-screen overflow-hidden flex flex-col items-center justify-start rounded-[2rem] md:rounded-[3rem] border border-white/5 mx-4 md:mx-8 mt-24 md:mt-28 mb-12 shadow-2xl bg-dark-900"
-        intensity="strong"
+        className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center rounded-[2rem] md:rounded-[3rem] border border-white/5 mx-4 md:mx-8 mt-24 md:mt-28 mb-12 shadow-2xl bg-dark-900"
       >
+        {/* Dithering noise texture overlay */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <svg className="w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
+            <filter id="hero-noise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+              <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#hero-noise)" />
+          </svg>
+        </div>
+
+        {/* Subtle radial glow */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%)' }} />
+          <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(123,97,255,0.04) 0%, transparent 70%)' }} />
+        </div>
 
         <motion.div
           style={{ y, opacity }}
-          className="relative z-10 container mx-auto px-6 pt-16 md:pt-20 pb-20 w-full"
+          className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-20 md:py-32 max-w-4xl mx-auto w-full"
         >
-          <div className="flex flex-col items-center justify-center gap-12 min-h-[calc(100vh-8rem)] max-w-3xl mx-auto">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col items-center text-center w-full gap-8"
+          >
+            {/* Badge */}
             <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex flex-col items-center text-center w-full"
+              variants={itemVariants}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-gray-400 tracking-wide"
+              style={{
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
             >
-              {/* Badge */}
-              <motion.div
-                variants={itemVariants}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
-                style={{
-                  background: 'rgba(0, 229, 255, 0.06)',
-                  border: '1px solid rgba(0, 229, 255, 0.2)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <motion.span
-                  className="w-2 h-2 rounded-full bg-primary"
-                  animate={{ scale: [1, 1.4, 1], opacity: [1, 0.6, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                <Sparkles className="w-3.5 h-3.5 text-primary" />
-                <span className="text-sm font-medium text-primary/90 tracking-wide">AI-Powered Campus Management</span>
-              </motion.div>
-
-              <motion.h1
-                variants={itemVariants}
-                className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.08] mb-6"
-              >
-                <span className="text-white">Smart Campus</span>
-                <br />
-                <span className="gradient-text">Digital Twin</span>
-                <br />
-                <span className="text-white">Ecosystem</span>
-              </motion.h1>
-
-              <motion.p
-                variants={itemVariants}
-                className="text-lg text-gray-400 mb-10 leading-relaxed max-w-xl mx-auto"
-              >
-                Transforming universities into intelligent, connected and predictive digital campuses — powered by real-time AI.
-              </motion.p>
-
-              <motion.div
-                variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-4 justify-center"
-              >
-                <motion.button
-                  className="btn-primary flex items-center justify-center gap-2 group relative overflow-hidden"
-                  whileHover={{
-                    scale: 1.05,
-                    y: -3,
-                    boxShadow: '0 20px 40px rgba(0, 229, 255, 0.3)',
-                  }}
-                  whileTap={{ scale: 0.96 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                >
-                  <Play className="w-4 h-4" />
-                  Request Demo
-                  {/* Glow halo */}
-                  <span className="absolute -inset-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ background: 'radial-gradient(ellipse, rgba(0,229,255,0.2) 0%, transparent 70%)' }}
-                  />
-                </motion.button>
-                <motion.button
-                  className="btn-secondary flex items-center justify-center gap-2"
-                  whileHover={{
-                    scale: 1.05,
-                    y: -3,
-                    boxShadow: '0 20px 40px rgba(123, 97, 255, 0.15)',
-                  }}
-                  whileTap={{ scale: 0.96 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                >
-                  <Database className="w-4 h-4" />
-                  Explore Platform
-                </motion.button>
-              </motion.div>
-
-              {/* Stats row */}
-              <motion.div
-                variants={itemVariants}
-                className="mt-14 flex flex-col items-center gap-6 w-full"
-              >
-                <div className="flex flex-wrap gap-x-12 gap-y-4 justify-center items-center">
-                  {[
-                    { label: 'Universities', value: '150+' },
-                    { label: 'Students', value: '2M+' },
-                    { label: 'Countries', value: '45' },
-                  ].map((stat, i) => (
-                    <div key={i} className="text-center">
-                      <div className="text-3xl font-bold gradient-text" style={{ fontFamily: 'Sora, sans-serif' }}>{stat.value}</div>
-                      <div className="text-xs text-gray-500 uppercase tracking-widest mt-0.5">{stat.label}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="w-48 h-px bg-white/10" />
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
-                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                    <span>2,847 active users right now</span>
-                  </div>
-                </div>
-              </motion.div>
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              AI-Powered Campus Management
             </motion.div>
-          </div>
+
+            {/* Main heading with mixed serif/sans typography */}
+            <motion.h1
+              variants={itemVariants}
+              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] tracking-tight"
+            >
+              <span
+                className="text-white italic font-light block"
+                style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+              >
+                Smart Campus,
+              </span>
+              <span
+                className="text-white font-extrabold block mt-1"
+                style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+              >
+                reimagined{' '}
+                <span className="gradient-text">digitally.</span>
+              </span>
+            </motion.h1>
+
+            {/* Subheading */}
+            <motion.p
+              variants={itemVariants}
+              className="text-base sm:text-lg text-gray-400 leading-relaxed max-w-xl mx-auto"
+            >
+              Join 150+ universities using the only digital twin platform that transforms
+              campuses into intelligent, connected ecosystems. Real-time. Predictive. Autonomous.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 justify-center mt-2"
+            >
+              <motion.button
+                className="btn-primary flex items-center justify-center gap-2 h-14 px-12 text-base"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+              >
+                <Play className="w-4 h-4" />
+                Request Demo
+              </motion.button>
+              <motion.button
+                className="btn-secondary flex items-center justify-center gap-2 h-14 px-12 text-base"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+              >
+                <Database className="w-4 h-4" />
+                Explore Platform
+              </motion.button>
+            </motion.div>
+
+            {/* Stats row */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-8 flex flex-col items-center gap-6 w-full"
+            >
+              <div className="w-32 h-px bg-white/10" />
+              <div className="flex flex-wrap gap-x-12 gap-y-4 justify-center items-center">
+                {[
+                  { label: 'Universities', value: '150+' },
+                  { label: 'Students', value: '2M+' },
+                  { label: 'Countries', value: '45' },
+                ].map((stat, i) => (
+                  <div key={i} className="text-center">
+                    <div className="text-2xl font-bold text-white" style={{ fontFamily: 'Sora, sans-serif' }}>{stat.value}</div>
+                    <div className="text-xs text-gray-500 uppercase tracking-widest mt-0.5">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span>2,847 active users right now</span>
+              </div>
+            </motion.div>
+          </motion.div>
         </motion.div>
 
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 z-10"
         >
           <span className="text-[10px] uppercase tracking-[0.2em] text-gray-600">Scroll</span>
           <div className="w-5 h-9 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
@@ -381,16 +386,25 @@ export default function Hero() {
             />
           </div>
         </motion.div>
+      </section>
 
-        {/* Container Scroll Animation directly inside BeamsBackground */}
-        <div className="relative z-10 flex flex-col overflow-hidden w-full -mt-20">
+      {/* Experience the Future of Campus Intelligence Section */}
+      <section className="relative py-24 overflow-hidden bg-white rounded-[2rem] md:rounded-[3rem] border border-black/5 mx-4 md:mx-8 my-12 shadow-2xl">
+        <div className="relative z-10 flex flex-col overflow-hidden w-full">
           <ContainerScroll
             titleComponent={
               <>
-                <h2 className="text-4xl font-semibold text-white mb-2">
-                  Experience the Future of
-                  <br />
-                  <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none gradient-text">
+                <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-black mb-2 relative z-10">
+                  <span
+                    className="italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    Experience the Future of
+                  </span>
+                  <span
+                    className="text-4xl md:text-[6rem] font-extrabold block mt-2 leading-none gradient-text"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
                     Campus Intelligence
                   </span>
                 </h2>
@@ -507,7 +521,7 @@ export default function Hero() {
             </div>
           </ContainerScroll>
         </div>
-      </BeamsBackground>
+      </section>
     </>
   );
 }

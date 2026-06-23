@@ -326,10 +326,19 @@ export default function StudentPortal() {
                   <span className="text-sm text-gray-300">Student Portal</span>
                 </div>
 
-                <h2 className="font-display text-4xl sm:text-5xl font-bold mb-6">
-                  <span className="text-white">Your Campus,</span>
-                  <br />
-                  <span className="gradient-text">Your Control</span>
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl leading-[1.15] tracking-tight mb-6">
+                  <span
+                    className="text-white italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    Your Campus,
+                  </span>
+                  <span
+                    className="text-white font-extrabold block mt-1"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
+                    Your <span className="gradient-text">Control</span>
+                  </span>
                 </h2>
 
                 <p className="text-xl text-gray-400 mb-8">
@@ -356,19 +365,33 @@ export default function StudentPortal() {
       </section>
 
       {/* Container Scroll Section for Student Dashboard Mockup */}
-      <section className="relative py-24 overflow-hidden bg-dark-800 rounded-[2rem] md:rounded-[3rem] border border-white/5 mx-4 md:mx-8 my-12 shadow-2xl">
+      <section className="relative py-24 overflow-hidden bg-white rounded-[2rem] md:rounded-[3rem] border border-black/5 mx-4 md:mx-8 my-12 shadow-2xl">
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[150px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-[150px]" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[150px]" />
+        </div>
+        
+        {/* Experimental type poster background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center pointer-events-none z-0 opacity-5 overflow-hidden">
+          <h1 className="text-[12vw] font-black text-black whitespace-nowrap uppercase tracking-tighter mix-blend-overlay">
+            University and students
+          </h1>
         </div>
         <div className="relative z-10 flex flex-col overflow-hidden w-full">
           <ContainerScroll
             titleComponent={
               <>
-                <h2 className="text-4xl font-semibold text-white mb-2">
-                  Student Companion
-                  <br />
-                  <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none gradient-text">
+                <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-black mb-2 relative z-10">
+                  <span
+                    className="italic font-light block"
+                    style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
+                  >
+                    Student Companion
+                  </span>
+                  <span
+                    className="text-4xl md:text-[6rem] font-extrabold block mt-2 leading-none gradient-text"
+                    style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
+                  >
                     Intuitive Workspace
                   </span>
                 </h2>
