@@ -114,7 +114,7 @@ export default function FeaturesShowcase() {
   };
 
   return (
-    <section ref={containerRef} id="modules-showcase" className="relative py-28 overflow-hidden bg-white dark:bg-dark-950 transition-colors duration-300">
+    <section ref={containerRef} id="modules-showcase" className="relative py-28 overflow-hidden bg-white dark:bg-dark-950 transition-colors duration-300 rounded-[2rem] md:rounded-[3rem] border border-black/5 mx-4 md:mx-8 my-12 shadow-2xl">
       {/* Background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center pointer-events-none z-0 opacity-[0.03] dark:opacity-[0.05] overflow-hidden">

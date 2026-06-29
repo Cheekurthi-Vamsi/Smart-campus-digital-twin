@@ -5,7 +5,7 @@ import { ContainerScroll } from './ui/container-scroll-animation';
 
 
 
-export default function Hero() {
+export default function Hero({ onGetStarted }: { onGetStarted?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -33,6 +33,18 @@ export default function Hero() {
       y: 0,
       transition: {
         duration: 0.8,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  };
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
         ease: [0.22, 1, 0.36, 1],
       },
     },
@@ -84,29 +96,48 @@ export default function Hero() {
               AI-Powered Campus Management
             </motion.div>
 
-            {/* Main heading with mixed serif/sans typography */}
+            {/* Main heading with split-word stagger animation */}
             <motion.h1
-              variants={itemVariants}
-              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] tracking-tight"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] tracking-tight flex flex-col items-center"
             >
               <span
                 className="text-white italic font-light block"
                 style={{ fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif" }}
               >
-                Smart Campus,
+                {["Smart", "Campus,"].map((word, idx) => (
+                  <motion.span
+                    key={idx}
+                    variants={wordVariants}
+                    className="inline-block mr-3"
+                  >
+                    {word}
+                  </motion.span>
+                ))}
               </span>
               <span
                 className="text-white font-extrabold block mt-1"
                 style={{ fontFamily: "'Sora', 'Inter', system-ui, sans-serif" }}
               >
-                reimagined{' '}
-                <span className="gradient-text">digitally.</span>
+                {["reimagined", "digitally."].map((word, idx) => (
+                  <motion.span
+                    key={idx}
+                    variants={wordVariants}
+                    className={idx === 1 ? "gradient-text inline-block" : "inline-block mr-3"}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
               </span>
             </motion.h1>
 
-            {/* Subheading */}
+            {/* Subheading with typewriter reveal effect */}
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
+              animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
+              transition={{ duration: 0.8, ease: "easeInOut", delay: 0.4 }}
               className="text-base sm:text-lg text-gray-400 leading-relaxed max-w-xl mx-auto"
             >
               Join 150+ universities using the only digital twin platform that transforms
@@ -119,13 +150,14 @@ export default function Hero() {
               className="flex flex-col sm:flex-row gap-4 justify-center mt-2"
             >
               <motion.button
-                className="btn-primary flex items-center justify-center gap-2 h-14 px-12 text-base"
+                onClick={onGetStarted}
+                className="btn-primary flex items-center justify-center gap-2 h-14 px-12 text-base cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 15 }}
               >
                 <Play className="w-4 h-4" />
-                Request Demo
+                Get Started
               </motion.button>
               <motion.button
                 className="btn-secondary flex items-center justify-center gap-2 h-14 px-12 text-base"
@@ -157,7 +189,7 @@ export default function Hero() {
                 ))}
               </div>
               <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-green-400" />
                 <span>2,847 active users right now</span>
               </div>
             </motion.div>
@@ -173,11 +205,7 @@ export default function Hero() {
         >
           <span className="text-[10px] uppercase tracking-[0.2em] text-gray-600">Scroll</span>
           <div className="w-5 h-9 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
-            <motion.div
-              animate={{ y: [0, 14, 0], opacity: [1, 0, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-1 h-2 rounded-full bg-primary"
-            />
+            <div className="w-1 h-2 rounded-full bg-primary" />
           </div>
         </motion.div>
       </section>
@@ -187,7 +215,14 @@ export default function Hero() {
         <div className="relative z-10 flex flex-col overflow-hidden w-full">
           <ContainerScroll
             titleComponent={
-              <>
+              <div className="flex flex-col items-center">
+                {/* Floating Live users online pill */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-white/10 text-xs text-white mb-6 shadow-lg z-20">
+                  <span className="relative flex h-2 w-2">
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  </span>
+                  <span className="font-semibold tracking-wider font-mono text-[10px]">LIVE — 2,847 USERS ONLINE</span>
+                </div>
                 <h2 className="text-4xl md:text-5xl leading-tight tracking-tight text-black mb-2 relative z-10">
                   <span
                     className="italic font-light block"
@@ -202,7 +237,7 @@ export default function Hero() {
                     Campus Intelligence
                   </span>
                 </h2>
-              </>
+              </div>
             }
           >
             {/* Dashboard mockup inside the scroll container */}
@@ -216,7 +251,7 @@ export default function Hero() {
                 </div>
                 <div className="text-sm text-gray-400 font-mono">campustwin.ai/dashboard</div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-green-400" />
                   <span className="text-xs text-green-400">Live</span>
                 </div>
               </div>
@@ -251,7 +286,7 @@ export default function Hero() {
                     ].map((stat) => (
                       <div
                         key={stat.label}
-                        className="glass-card rounded-xl p-4 border border-white/5"
+                        className="glass-card rounded-2xl p-4 border border-white/5"
                       >
                         <div className="text-xs text-gray-500 mb-1">{stat.label}</div>
                         <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
@@ -261,17 +296,17 @@ export default function Hero() {
                   </div>
 
                   {/* Chart placeholder */}
-                  <div className="glass-card rounded-xl p-6 border border-white/5 flex-1">
+                  <div className="glass-card rounded-2xl p-6 border border-white/5 flex-1">
                     <div className="text-sm text-gray-400 mb-4">Campus Activity — Last 24 Hours</div>
                     <div className="flex items-end gap-2 h-32">
                       {Array.from({ length: 24 }).map((_, i) => (
                         <div
                           key={i}
-                          className="flex-1 rounded-t-sm"
+                          className="flex-1 rounded-t-lg"
                           style={{
-                            height: `${20 + Math.sin(i * 0.5) * 30 + Math.random() * 50}%`,
-                            background: `linear-gradient(to top, rgba(0,229,255,0.6), rgba(123,97,255,0.3))`,
-                            opacity: 0.4 + Math.random() * 0.6,
+                            height: `${25 + Math.sin(i * 0.8) * 20 + (i % 3) * 15}%`,
+                            background: `linear-gradient(to top, rgba(0,229,255,0.65), rgba(123,97,255,0.35))`,
+                            opacity: 0.5 + (i % 4) * 0.12,
                           }}
                         />
                       ))}
@@ -280,7 +315,7 @@ export default function Hero() {
 
                   {/* Bottom row */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="glass-card rounded-xl p-4 border border-white/5">
+                    <div className="glass-card rounded-2xl p-4 border border-white/5">
                       <div className="text-xs text-gray-500 mb-2">Building Status</div>
                       <div className="space-y-2">
                         {['Engineering Block', 'Library', 'Admin Block'].map((b) => (
@@ -294,7 +329,7 @@ export default function Hero() {
                         ))}
                       </div>
                     </div>
-                    <div className="glass-card rounded-xl p-4 border border-white/5">
+                    <div className="glass-card rounded-2xl p-4 border border-white/5">
                       <div className="text-xs text-gray-500 mb-2">Recent Events</div>
                       <div className="space-y-2">
                         {[

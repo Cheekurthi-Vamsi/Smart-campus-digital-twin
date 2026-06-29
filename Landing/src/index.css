@@ -427,4 +427,61 @@ body {
   :root:not(.dark) svg path[stroke="white"] {
     stroke: rgba(0, 0, 0, 0.15) !important;
   }
+
+  /* Drifting mesh gradients keyframes */
+  @keyframes gradientDrift {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.95);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  .mesh-drift {
+    /* static background mesh shapes */
+  }
+
+  /* Interactive card hover glow */
+  .glow-card-interactive {
+    position: relative;
+  }
+
+  .glow-card-interactive::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, 50%), rgba(0, 229, 255, 0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .glow-card-interactive:hover::before {
+    opacity: 1;
+  }
+
+  /* Custom specular highlight on scroll mockup top edge */
+  .specular-highlight {
+    position: relative;
+  }
+  .specular-highlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12) 50%, transparent);
+    z-index: 30;
+    pointer-events: none;
+  }
 }

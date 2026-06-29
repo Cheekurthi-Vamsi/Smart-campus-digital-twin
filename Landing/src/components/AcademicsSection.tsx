@@ -170,7 +170,11 @@ export default function AcademicsSection() {
   const active = slides[currentSlide];
 
   return (
-    <section id="academics" ref={containerRef} className="relative py-32 overflow-hidden bg-gradient-to-tr from-neutral-50 via-slate-50 to-neutral-50 dark:from-dark-900 dark:via-dark-900 dark:to-dark-900 border-b border-black/5 dark:border-white/5 transition-colors duration-300">
+    <section
+      id="academics"
+      ref={containerRef}
+      className="relative py-32 overflow-hidden bg-gradient-to-tr from-neutral-50 via-slate-50 to-neutral-50 dark:from-dark-900 dark:via-dark-900 dark:to-dark-900 transition-colors duration-300 rounded-[2rem] md:rounded-[3rem] border border-black/5 dark:border-white/10 mx-4 md:mx-8 my-12 shadow-2xl"
+    >
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 dark:bg-primary/5 blur-[150px]" />
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-secondary/10 dark:bg-secondary/5 blur-[150px]" />
@@ -197,7 +201,7 @@ export default function AcademicsSection() {
         </div>
 
         {/* Carousel Slider Panel */}
-        <div className="relative glass-card border border-black/10 dark:border-white/10 rounded-3xl p-6 md:p-10 min-h-[520px] flex flex-col justify-between overflow-hidden shadow-2xl">
+        <div className="relative glass-card border border-black/10 dark:border-white/10 rounded-[2rem] p-6 md:p-10 min-h-[520px] flex flex-col justify-between overflow-hidden shadow-2xl">
           
           {/* Slide Navigator Controls */}
           <div className="absolute top-6 right-6 flex items-center gap-2 z-20">
@@ -248,7 +252,7 @@ export default function AcademicsSection() {
 
               {/* Interactive Mockup Container */}
               <div className="lg:col-span-7">
-                <div className="relative rounded-3xl bg-slate-950/95 border border-slate-900 p-5 shadow-2xl h-[330px] flex flex-col justify-between text-left overflow-hidden">
+                <div className="relative rounded-[1.75rem] bg-slate-950/95 border border-slate-900 p-5 shadow-2xl h-[330px] flex flex-col justify-between text-left overflow-hidden">
                   
                   {/* Chrome mock bar */}
                   <div className="flex items-center justify-between border-b border-white/5 pb-3">

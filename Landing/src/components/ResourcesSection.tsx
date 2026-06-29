@@ -18,21 +18,21 @@ export default function ResourcesSection() {
     if (downloads[id]) return;
     
     // Simulate loading progress
-    setDownloads(prev => ({ ...prev, [id]: 15 }));
-    let progress = 15;
+    setDownloads(prev => ({ ...prev, [id]: 1 }));
+    let progress = 1;
     const interval = setInterval(() => {
-      progress += 25;
+      progress += 5;
       if (progress >= 100) {
         clearInterval(interval);
         setDownloads(prev => ({ ...prev, [id]: 100 }));
       } else {
         setDownloads(prev => ({ ...prev, [id]: progress }));
       }
-    }, 200);
+    }, 70);
   };
 
   return (
-    <section id="resources" ref={containerRef} className="relative py-32 overflow-hidden bg-gradient-to-tr from-neutral-50 via-white to-neutral-50 dark:from-dark-900 dark:via-dark-900 dark:to-dark-900 border-b border-black/5 dark:border-white/5 transition-colors duration-300">
+    <section id="resources" ref={containerRef} className="relative py-32 overflow-hidden bg-gradient-to-tr from-neutral-50 via-white to-neutral-50 dark:from-dark-900 dark:via-dark-900 dark:to-dark-900 rounded-[2rem] md:rounded-[3rem] border border-black/5 dark:border-white/5 transition-colors duration-300 mx-4 md:mx-8 my-12 shadow-2xl">
       {/* Background gradients */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/3 w-[600px] h-[600px] rounded-full bg-amber-500/10 dark:bg-amber-500/5 blur-[150px]" />
@@ -112,7 +112,7 @@ export default function ResourcesSection() {
                     <div key={doc.id} className="p-3.5 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between gap-4">
                       <div className="flex-grow min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500">
+                          <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-lg bg-amber-500/10 text-amber-500">
                             {doc.course}
                           </span>
                           <span className="text-xs font-bold text-white truncate leading-none">{doc.title}</span>
@@ -128,17 +128,24 @@ export default function ResourcesSection() {
 
                       <button
                         onClick={() => triggerDownload(doc.id)}
+                        style={{
+                          background: progress > 0 && !isFinished
+                            ? `linear-gradient(to right, rgba(245, 158, 11, 0.25) ${progress}%, transparent ${progress}%)`
+                            : undefined
+                        }}
                         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 ${
                           isFinished
                             ? 'bg-amber-500/20 border border-amber-500 text-amber-400'
+                            : progress > 0
+                            ? 'border border-amber-500/30 text-amber-500'
                             : 'bg-white hover:bg-slate-100 text-slate-900'
                         }`}
                       >
                         {progress > 0 && !isFinished ? (
-                          <span className="font-mono">{progress}%</span>
+                          <span className="font-mono">⏳ {progress}%</span>
                         ) : isFinished ? (
                           <>
-                            <Eye className="w-3.5 h-3.5" /> View
+                            <Check className="w-3.5 h-3.5 text-[#10B981]" /> Vetted
                           </>
                         ) : (
                           <>

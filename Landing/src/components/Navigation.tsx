@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, GraduationCap } from 'lucide-react';
+import { Menu, X, GraduationCap, LogOut, LayoutDashboard, Home } from 'lucide-react';
+import { UserButton, useAuth } from '@clerk/react';
 import ThemeToggle from './ThemeToggle';
+import { UserSession } from '../lib/supabase';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -12,12 +14,22 @@ const navLinks = [
   { name: 'Contact', href: '#contact' },
 ];
 
-export default function Navigation() {
+interface NavigationProps {
+  currentView: 'landing' | 'login' | 'student-dashboard' | 'faculty-dashboard';
+  user: UserSession | null;
+  onNavigate: (view: 'landing' | 'login' | 'student-dashboard' | 'faculty-dashboard') => void;
+  onLogout: () => void;
+}
+
+export default function Navigation({ currentView, user, onNavigate, onLogout }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const { isSignedIn, isLoaded } = useAuth();
 
   const handleScroll = useCallback(() => {
+    if (currentView !== 'landing') return;
+    
     const scrollY = window.scrollY;
     setIsScrolled(scrollY > 60);
 
@@ -29,18 +41,47 @@ export default function Navigation() {
         break;
       }
     }
-  }, []);
+  }, [currentView]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
+  // Adjust scroll styling when on dashboard / login view
+  useEffect(() => {
+    if (currentView !== 'landing') {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(window.scrollY > 60);
+    }
+  }, [currentView]);
+
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (currentView !== 'landing') {
+      onNavigate('landing');
+      // Delay scrolling slightly to let landing page mount
+      setTimeout(() => {
+        const el = document.querySelector(href);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      const el = document.querySelector(href);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (currentView !== 'landing') {
+      onNavigate('landing');
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -85,20 +126,11 @@ export default function Navigation() {
           {/* Logo */}
           <motion.a
             href="#home"
-            onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }}
-            className="flex items-center gap-2.5 px-3 py-1.5 rounded-full mr-1 pointer-events-auto"
+            onClick={handleLogoClick}
+            className="flex items-center px-3 py-1.5 rounded-full mr-1 pointer-events-auto"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{
-                background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)',
-                boxShadow: '0 0 16px rgba(0, 229, 255, 0.4)',
-              }}
-            >
-              <GraduationCap className="w-4.5 h-4.5 text-white" style={{ width: '18px', height: '18px' }} />
-            </div>
             <span
               className="font-bold text-slate-800 dark:text-white hidden sm:block text-sm tracking-wide"
               style={{ fontFamily: 'Sora, Inter, sans-serif', letterSpacing: '0.02em' }}
@@ -108,33 +140,45 @@ export default function Navigation() {
           </motion.a>
 
           {/* Nav links */}
-          <nav className="hidden lg:flex items-center gap-1.5 flex-1 relative">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.href.replace('#', '');
-              return (
-                <motion.a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                  className="relative px-3 py-1.5 text-xs font-semibold rounded-full transition-colors duration-200"
-                  style={{
-                    color: isActive ? '#00E5FF' : 'rgba(203, 213, 225, 0.85)',
-                    background: isActive ? 'rgba(0, 229, 255, 0.08)' : 'transparent',
-                  }}
-                  whileHover={{ color: '#ffffff', background: 'rgba(255,255,255,0.06)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {link.name}
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-active-dot"
-                      className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </motion.a>
-              );
-            })}
+          <nav className="hidden lg:flex items-center gap-1.5 flex-grow relative">
+            {currentView === 'landing' ? (
+              navLinks.map((link) => {
+                const isActive = activeSection === link.href.replace('#', '');
+                return (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                    className="relative px-3 py-1.5 text-xs font-semibold rounded-full transition-colors duration-200"
+                    style={{
+                      color: isActive ? '#00E5FF' : 'rgba(203, 213, 225, 0.85)',
+                      background: isActive ? 'rgba(0, 229, 255, 0.08)' : 'transparent',
+                    }}
+                    whileHover={{ color: '#ffffff', background: 'rgba(255,255,255,0.06)' }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {link.name}
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-active-dot"
+                        className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </motion.a>
+                );
+              })
+            ) : (
+              // Simplified navigation when not on landing page
+              <motion.button
+                onClick={() => onNavigate('landing')}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-300 hover:text-white rounded-full hover:bg-white/5 transition-all cursor-pointer"
+                whileTap={{ scale: 0.96 }}
+              >
+                <Home className="w-3.5 h-3.5" />
+                Landing Home
+              </motion.button>
+            )}
           </nav>
 
           <div className="hidden lg:block w-px h-5 bg-white/10 mx-1" />
@@ -142,36 +186,48 @@ export default function Navigation() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-2 ml-1">
             <ThemeToggle />
-            <motion.a
-              href="#login"
-              onClick={(e) => e.preventDefault()}
-              className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/5"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              Sign In
-            </motion.a>
-            <motion.a
-              href="#get-started"
-              onClick={(e) => e.preventDefault()}
-              className="px-4 py-2 text-xs font-semibold text-white rounded-full relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)',
-                boxShadow: '0 2px 12px rgba(0, 229, 255, 0.25)',
-              }}
-              whileHover={{
-                scale: 1.04,
-                boxShadow: '0 4px 20px rgba(0, 229, 255, 0.4)',
-              }}
-              whileTap={{ scale: 0.96 }}
-            >
-              Get Started
-            </motion.a>
+            
+            {isLoaded && isSignedIn ? (
+              <>
+                <motion.button
+                  onClick={() => onNavigate(user?.role === 'student' ? 'student-dashboard' : 'faculty-dashboard')}
+                  className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white rounded-full transition-all border ${
+                    currentView.includes('dashboard')
+                      ? 'bg-primary/10 border-primary/30 text-primary'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  Dashboard
+                </motion.button>
+                <UserButton afterSignOutUrl="/" />
+              </>
+            ) : (
+              currentView !== 'login' && (
+                <motion.button
+                  onClick={() => onNavigate('login')}
+                  className="px-4 py-2 text-xs font-semibold text-white rounded-full relative overflow-hidden cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)',
+                    boxShadow: '0 2px 12px rgba(0, 229, 255, 0.25)',
+                  }}
+                  whileHover={{
+                    scale: 1.04,
+                    boxShadow: '0 4px 20px rgba(0, 229, 255, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  Get Started
+                </motion.button>
+              )
+            )}
           </div>
 
           {/* Mobile menu trigger */}
           <motion.button
-            className="lg:hidden ml-auto p-2 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors pointer-events-auto"
+            className="lg:hidden ml-auto p-2 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors pointer-events-auto cursor-pointer"
             onClick={() => setIsMobileMenuOpen(true)}
             whileTap={{ scale: 0.9 }}
             aria-label="Open menu"
@@ -213,14 +269,14 @@ export default function Navigation() {
             >
               {/* Drawer header */}
               <div className="flex justify-between items-center px-6 py-5 border-b border-white/5">
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5" onClick={(e) => { setIsMobileMenuOpen(false); handleLogoClick(e); }}>
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer"
                     style={{ background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)' }}
                   >
                     <GraduationCap style={{ width: '17px', height: '17px', color: 'white' }} />
                   </div>
-                  <span className="font-bold text-white text-sm" style={{ fontFamily: 'Sora, sans-serif' }}>
+                  <span className="font-bold text-white text-sm cursor-pointer" style={{ fontFamily: 'Sora, sans-serif' }}>
                     CampusTwin
                   </span>
                 </div>
@@ -228,7 +284,7 @@ export default function Navigation() {
                   <ThemeToggle />
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -236,38 +292,74 @@ export default function Navigation() {
               </div>
 
               {/* Drawer Links */}
-              <div className="flex flex-col px-4 py-6 gap-3 overflow-y-auto max-h-[calc(100vh-140px)]">
+              <div className="flex flex-col px-4 py-6 gap-3 overflow-y-auto max-h-[calc(100vh-180px)]">
                 <div className="space-y-1">
-                  {navLinks.map((link) => (
-                    <a
-                      key={link.name}
-                      href={link.href}
-                      onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                      className="block px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white rounded-xl hover:bg-white/5"
+                  {currentView === 'landing' ? (
+                    navLinks.map((link) => (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                        className="block px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white rounded-xl hover:bg-white/5"
+                      >
+                        {link.name}
+                      </a>
+                    ))
+                  ) : (
+                    <button
+                      onClick={() => { setIsMobileMenuOpen(false); onNavigate('landing'); }}
+                      className="w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white rounded-xl hover:bg-white/5 flex items-center gap-2 cursor-pointer"
                     >
-                      {link.name}
-                    </a>
-                  ))}
+                      <Home className="w-4 h-4" />
+                      Back to Home
+                    </button>
+                  )}
                 </div>
               </div>
 
               {/* Drawer CTA */}
               <div className="absolute bottom-0 left-0 right-0 px-4 pb-8 pt-4 border-t border-white/5">
-                <a
-                  href="#login"
-                  onClick={(e) => e.preventDefault()}
-                  className="block w-full text-center py-2.5 text-sm text-gray-300 hover:text-white transition-colors rounded-xl hover:bg-white/5 mb-2"
-                >
-                  Sign In
-                </a>
-                <a
-                  href="#get-started"
-                  onClick={(e) => e.preventDefault()}
-                  className="block w-full text-center py-3 text-sm font-semibold text-white rounded-xl"
-                  style={{ background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)' }}
-                >
-                  Get Started Free
-                </a>
+                {user ? (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        onNavigate(user.role === 'student' ? 'student-dashboard' : 'faculty-dashboard');
+                      }}
+                      className="w-full text-center py-2.5 text-sm text-white transition-colors rounded-xl bg-white/5 border border-white/10 font-semibold flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <LayoutDashboard className="w-4 h-4 text-primary" />
+                      Go to Dashboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        onLogout();
+                      }}
+                      className="w-full text-center py-2.5 text-sm text-red-400 hover:text-red-300 transition-colors rounded-xl bg-red-500/5 border border-red-500/20 font-semibold flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    {currentView !== 'login' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            onNavigate('login');
+                          }}
+                          className="block w-full text-center py-3 text-sm font-semibold text-white rounded-xl cursor-pointer"
+                          style={{ background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)' }}
+                        >
+                          Get Started
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </motion.div>
           </motion.div>

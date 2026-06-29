@@ -15,7 +15,7 @@ interface ScrollShowcaseProps {
  */
 export default function ScrollShowcase({ title, highlight, children }: ScrollShowcaseProps) {
   return (
-    <section className="relative bg-dark-900">
+    <section className="relative py-24 overflow-hidden bg-dark-900 rounded-[2rem] md:rounded-[3rem] border border-white/5 mx-4 md:mx-8 my-12 shadow-2xl">
       <div className="flex flex-col overflow-hidden">
         <ContainerScroll
           titleComponent={
