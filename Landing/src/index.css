@@ -420,17 +420,7 @@ body {
   }
 
   /* Support dark/light mode for container-scroll sections */
-  .dark section.bg-white {
-    background-color: var(--color-dark-800) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-  }
-  .dark section.bg-white .text-black {
-    color: #ffffff !important;
-  }
-  .dark section.bg-white h1.mix-blend-overlay {
-    color: #ffffff !important;
-    opacity: 0.08;
-  }
+
 
   /* Responsive SVG strokes for grid backgrounds */
   :root:not(.dark) svg polygon[stroke="white"],

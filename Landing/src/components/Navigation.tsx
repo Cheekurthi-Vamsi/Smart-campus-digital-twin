@@ -1,16 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Menu, X, GraduationCap, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, GraduationCap } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
-  { name: 'Platform', href: '#platform' },
-  { name: 'Features', href: '#features' },
-  { name: 'Faculty', href: '#faculty' },
-  { name: 'Students', href: '#students' },
-  { name: 'Security', href: '#security' },
-  { name: 'Analytics', href: '#analytics' },
+  { name: 'Ecosystem Hub', href: '#ecosystem' },
+  { name: 'Academics', href: '#academics' },
+  { name: 'Opportunities', href: '#opportunities' },
+  { name: 'Resources', href: '#resources' },
   { name: 'Contact', href: '#contact' },
 ];
 
@@ -23,11 +21,10 @@ export default function Navigation() {
     const scrollY = window.scrollY;
     setIsScrolled(scrollY > 60);
 
-    // Track active section
-    const sections = navLinks.map((l) => l.href.replace('#', ''));
+    const sections = ['home', 'ecosystem', 'academics', 'opportunities', 'resources', 'contact'];
     for (const section of sections.reverse()) {
       const el = document.getElementById(section);
-      if (el && el.getBoundingClientRect().top <= 100) {
+      if (el && el.getBoundingClientRect().top <= 120) {
         setActiveSection(section);
         break;
       }
@@ -58,13 +55,11 @@ export default function Navigation() {
         style={{ paddingTop: isScrolled ? '12px' : '20px', transition: 'padding-top 0.4s ease' }}
       >
         <div
-          className={`pointer-events-auto flex items-center gap-1 rounded-full transition-all duration-500 relative overflow-hidden ${
-            isScrolled
-              ? 'px-3 py-2'
-              : 'px-4 py-2.5'
+          className={`pointer-events-auto flex items-center gap-1 rounded-full transition-all duration-500 relative ${
+            isScrolled ? 'px-4 py-2' : 'px-5 py-3'
           }`}
           style={{
-            maxWidth: '1100px',
+            maxWidth: '1200px',
             width: '100%',
             background: isScrolled
               ? 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 50%, rgba(200,220,255,0.08) 100%)'
@@ -75,30 +70,23 @@ export default function Navigation() {
               ? '1px solid rgba(255, 255, 255, 0.18)'
               : '1px solid rgba(255, 255, 255, 0.08)',
             boxShadow: isScrolled
-              ? '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -1px 1px rgba(255,255,255,0.05)'
+              ? '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08), inset 0 1px 1px rgba(255,255,255,0.2)'
               : '0 4px 24px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.15)',
           }}
         >
-          {/* Liquid glass prismatic highlight */}
-          <div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.15) 35%, rgba(0,229,255,0.06) 42%, rgba(123,97,255,0.06) 48%, rgba(255,255,255,0.1) 55%, transparent 70%)',
-              mixBlendMode: 'overlay',
-            }}
-          />
           {/* Top edge light refraction */}
           <div
             className="absolute top-0 left-[10%] right-[10%] h-[1px] rounded-full pointer-events-none"
             style={{
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), rgba(0,229,255,0.2), rgba(123,97,255,0.15), rgba(255,255,255,0.3), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), rgba(0,229,255,0.2), transparent)',
             }}
           />
+
           {/* Logo */}
           <motion.a
             href="#home"
             onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }}
-            className="flex items-center gap-2.5 px-3 py-1.5 rounded-full mr-1"
+            className="flex items-center gap-2.5 px-3 py-1.5 rounded-full mr-1 pointer-events-auto"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
@@ -112,33 +100,27 @@ export default function Navigation() {
               <GraduationCap className="w-4.5 h-4.5 text-white" style={{ width: '18px', height: '18px' }} />
             </div>
             <span
-              className="font-bold text-white hidden sm:block text-sm tracking-wide"
+              className="font-bold text-slate-800 dark:text-white hidden sm:block text-sm tracking-wide"
               style={{ fontFamily: 'Sora, Inter, sans-serif', letterSpacing: '0.02em' }}
             >
               CampusTwin
             </span>
           </motion.a>
 
-          {/* Divider */}
-          <div className="hidden lg:block w-px h-5 bg-white/10 mx-1" />
-
           {/* Nav links */}
-          <nav className="hidden lg:flex items-center gap-0.5 flex-1">
-            {navLinks.map((link, index) => {
+          <nav className="hidden lg:flex items-center gap-1.5 flex-1 relative">
+            {navLinks.map((link) => {
               const isActive = activeSection === link.href.replace('#', '');
               return (
                 <motion.a
                   key={link.name}
                   href={link.href}
                   onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                  className="relative px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200"
+                  className="relative px-3 py-1.5 text-xs font-semibold rounded-full transition-colors duration-200"
                   style={{
                     color: isActive ? '#00E5FF' : 'rgba(203, 213, 225, 0.85)',
                     background: isActive ? 'rgba(0, 229, 255, 0.08)' : 'transparent',
                   }}
-                  initial={{ opacity: 0, y: -12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.04 + 0.15, duration: 0.4, ease: 'easeOut' }}
                   whileHover={{ color: '#ffffff', background: 'rgba(255,255,255,0.06)' }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -155,7 +137,6 @@ export default function Navigation() {
             })}
           </nav>
 
-          {/* Divider */}
           <div className="hidden lg:block w-px h-5 bg-white/10 mx-1" />
 
           {/* CTA Buttons */}
@@ -163,7 +144,8 @@ export default function Navigation() {
             <ThemeToggle />
             <motion.a
               href="#login"
-              className="px-4 py-2 text-xs font-medium text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/5"
+              onClick={(e) => e.preventDefault()}
+              className="px-4 py-2 text-xs font-semibold text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/5"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
@@ -171,6 +153,7 @@ export default function Navigation() {
             </motion.a>
             <motion.a
               href="#get-started"
+              onClick={(e) => e.preventDefault()}
               className="px-4 py-2 text-xs font-semibold text-white rounded-full relative overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)',
@@ -188,7 +171,7 @@ export default function Navigation() {
 
           {/* Mobile menu trigger */}
           <motion.button
-            className="lg:hidden ml-auto p-2 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+            className="lg:hidden ml-auto p-2 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors pointer-events-auto"
             onClick={() => setIsMobileMenuOpen(true)}
             whileTap={{ scale: 0.9 }}
             aria-label="Open menu"
@@ -221,7 +204,7 @@ export default function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 220, mass: 0.8 }}
-              className="absolute right-0 top-0 bottom-0 w-72"
+              className="absolute right-0 top-0 bottom-0 w-80 max-w-[90vw]"
               style={{
                 background: 'rgba(3, 7, 18, 0.95)',
                 backdropFilter: 'blur(40px)',
@@ -252,41 +235,34 @@ export default function Navigation() {
                 </div>
               </div>
 
-              {/* Drawer links */}
-              <div className="flex flex-col px-3 py-4 gap-0.5">
-                {navLinks.map((link, index) => {
-                  const isActive = activeSection === link.href.replace('#', '');
-                  return (
-                    <motion.a
+              {/* Drawer Links */}
+              <div className="flex flex-col px-4 py-6 gap-3 overflow-y-auto max-h-[calc(100vh-140px)]">
+                <div className="space-y-1">
+                  {navLinks.map((link) => (
+                    <a
                       key={link.name}
                       href={link.href}
                       onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
-                      style={{
-                        color: isActive ? '#00E5FF' : 'rgba(203, 213, 225, 0.8)',
-                        background: isActive ? 'rgba(0, 229, 255, 0.08)' : 'transparent',
-                      }}
-                      initial={{ opacity: 0, x: 24 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.04, duration: 0.3, ease: 'easeOut' }}
+                      className="block px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white rounded-xl hover:bg-white/5"
                     >
-                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />}
                       {link.name}
-                    </motion.a>
-                  );
-                })}
+                    </a>
+                  ))}
+                </div>
               </div>
 
               {/* Drawer CTA */}
               <div className="absolute bottom-0 left-0 right-0 px-4 pb-8 pt-4 border-t border-white/5">
                 <a
                   href="#login"
+                  onClick={(e) => e.preventDefault()}
                   className="block w-full text-center py-2.5 text-sm text-gray-300 hover:text-white transition-colors rounded-xl hover:bg-white/5 mb-2"
                 >
                   Sign In
                 </a>
                 <a
                   href="#get-started"
+                  onClick={(e) => e.preventDefault()}
                   className="block w-full text-center py-3 text-sm font-semibold text-white rounded-xl"
                   style={{ background: 'linear-gradient(135deg, #00E5FF 0%, #7B61FF 100%)' }}
                 >

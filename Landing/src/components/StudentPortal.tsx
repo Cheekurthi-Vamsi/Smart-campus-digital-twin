@@ -273,7 +273,7 @@ function FeatureList() {
       viewport={{ once: true }}
       className="space-y-4"
     >
-      {features.map((feature, i) => {
+      {features.map((feature) => {
         const itemVariants = {
           hidden: { opacity: 0, x: -20 },
           visible: { opacity: 1, x: 0, transition: { duration: 0.4 } }

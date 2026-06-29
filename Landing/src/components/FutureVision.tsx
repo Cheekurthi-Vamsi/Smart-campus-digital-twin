@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { ContainerScroll } from './ui/container-scroll-animation';
-import { Brain, Cpu, Building2, TrendingUp, Zap, Globe, Sparkles, ArrowRight } from 'lucide-react';
+import { Brain, Cpu, Building2, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 
 
 const visions = [

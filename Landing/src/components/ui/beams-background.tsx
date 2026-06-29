@@ -39,6 +39,12 @@ function createBeam(width: number, height: number): Beam {
     };
 }
 
+const opacityMap = {
+    subtle: 0.7,
+    medium: 0.85,
+    strong: 1,
+};
+
 export const BeamsBackground = forwardRef<HTMLDivElement, AnimatedGradientBackgroundProps>(
   ({ className, intensity = "strong", children }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -48,12 +54,6 @@ export const BeamsBackground = forwardRef<HTMLDivElement, AnimatedGradientBackgr
     const MINIMUM_BEAMS = 20;
 
     useImperativeHandle(ref, () => containerRef.current!);
-
-    const opacityMap = {
-        subtle: 0.7,
-        medium: 0.85,
-        strong: 1,
-    };
 
     useEffect(() => {
         const canvas = canvasRef.current;

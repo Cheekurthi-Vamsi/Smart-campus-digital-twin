@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { ContainerScroll } from './ui/container-scroll-animation';
-import { BarChart3, TrendingUp, Users, Shield, Zap, GraduationCap, Activity, PieChart, LineChart } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, Shield, Zap, GraduationCap, Activity, LineChart } from 'lucide-react';
 
 
 function AnimatedCounter({ target, duration = 2, prefix = '', suffix = '' }: { target: number; duration?: number; prefix?: string; suffix?: string }) {
