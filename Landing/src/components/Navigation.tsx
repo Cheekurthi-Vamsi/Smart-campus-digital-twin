@@ -202,7 +202,7 @@ export default function Navigation({ currentView, user, onNavigate, onLogout }: 
                   <LayoutDashboard className="w-3.5 h-3.5" />
                   Dashboard
                 </motion.button>
-                <UserButton afterSignOutUrl="/" />
+                <UserButton />
               </>
             ) : (
               currentView !== 'login' && (

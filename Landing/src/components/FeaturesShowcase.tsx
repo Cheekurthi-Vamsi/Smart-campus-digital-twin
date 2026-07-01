@@ -11,11 +11,8 @@ import {
   Check,
   Play,
   Terminal,
-  Bookmark,
   Download,
-  Search,
-  Eye,
-  GraduationCap
+  Eye
 } from 'lucide-react';
 
 const tabs = [

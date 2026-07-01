@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { z } from 'zod';
 import { requireAuth } from '@clerk/clerk-sdk-node';
-import { students, professors } from './mongoClient.js';
+import { students, professors, userKeys } from './mongoClient.js';
 
 const router = express.Router();
 const SALT_ROUNDS = 12;
@@ -214,7 +214,40 @@ router.post('/student/reset-password', async (req, res) => {
 });
 
 router.get('/session-status', requireAuth(), async (req, res) => {
-  return res.status(200).json({ authenticated: true, userId: req.auth.userId, email: req.auth.userInfo.primaryEmailAddress?.emailAddress });
+  try {
+    const clerkUserId = req.auth.userId;
+    const email = req.auth.userInfo?.primaryEmailAddress?.emailAddress || '';
+    const name = req.auth.userInfo?.fullName || req.auth.userInfo?.firstName || email.split('@')[0] || 'CampusTwin User';
+
+    let userKeyRecord = await userKeys.findOne({ clerkUserId });
+    if (!userKeyRecord) {
+      userKeyRecord = {
+        clerkUserId,
+        email,
+        name,
+        uniqueKey: crypto.randomUUID(),
+        createdAt: new Date(),
+        lastSeen: new Date()
+      };
+      await userKeys.insertOne(userKeyRecord);
+    } else {
+      await userKeys.updateOne(
+        { clerkUserId },
+        { $set: { lastSeen: new Date(), email, name } }
+      );
+      userKeyRecord = await userKeys.findOne({ clerkUserId });
+    }
+
+    return res.status(200).json({
+      authenticated: true,
+      userId: clerkUserId,
+      email: email,
+      uniqueKey: userKeyRecord?.uniqueKey
+    });
+  } catch (error) {
+    console.error('Error handling session status and user key:', error);
+    return res.status(500).json({ error: 'Failed to process session status' });
+  }
 });
 
 export default router;

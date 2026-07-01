@@ -8,18 +8,14 @@ import {
   Cpu,
   Bell,
   Car,
-  Activity,
   Trophy,
   GraduationCap,
   Terminal as TerminalIcon,
   Zap,
-  Check,
   Send,
   Wifi,
   Battery,
-  Radio,
-  FileText,
-  Lock
+  Radio
 } from 'lucide-react';
 
 // --- Buildings Coordinates & Data ---
@@ -160,7 +156,7 @@ export default function BentoGrid() {
     { category: 'Syllabus', title: 'Deep Learning CS-301 updates released.', desc: 'Class notes uploaded by Sarah Chen.', time: '5h ago', level: 'info' }
   ]);
 
-  const [facultyAnnouncements, setFacultyAnnouncements] = useState([
+  const [facultyAnnouncements] = useState([
     { category: 'Dean Memo', title: 'R&D Review Board Meeting today.', desc: '3:00 PM in Research Lab Conf Room A.', time: '5m ago', level: 'urgent' },
     { category: 'Grading', title: '14 NLP-302 papers pending evaluation.', desc: 'Due date: Friday 23:59.', time: '45m ago', level: 'warn' },
     { category: 'Resources', title: 'Lab A equipment maintenance update.', desc: 'Beacons sync will offline from 18:00.', time: '2h ago', level: 'info' },

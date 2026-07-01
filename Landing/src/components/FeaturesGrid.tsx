@@ -88,7 +88,7 @@ const features = [
   }
 ];
 
-function FeatureCard({ feature, index }: { feature: typeof features[0]; index: number }) {
+function FeatureCard({ feature }: { feature: typeof features[0] }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -192,8 +192,8 @@ export default function FeaturesGrid() {
 
         {/* 3x3 Grid with hairline dividers, border 1px on container, rounded-20px, overflow hidden */}
         <div className="border border-black/10 dark:border-white/[0.06] bg-slate-200 dark:bg-neutral-800/60 gap-[1px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 rounded-[20px] overflow-hidden shadow-2xl">
-          {features.map((feature, i) => (
-            <FeatureCard key={feature.title} feature={feature} index={i} />
+          {features.map((feature) => (
+            <FeatureCard key={feature.title} feature={feature} />
           ))}
         </div>
       </div>

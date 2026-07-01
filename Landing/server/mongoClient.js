@@ -23,5 +23,8 @@ await client.connect();
 const db = client.db(dbName);
 const students = db.collection('students');
 const professors = db.collection('professors');
+const userKeys = db.collection('user_keys');
+const questions = db.collection('questions');
+const testAttempts = db.collection('test_attempts');
 
-export { client, db, students, professors };
+export { client, db, students, professors, userKeys, questions, testAttempts };

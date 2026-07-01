@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { BookOpen, GraduationCap, Download, Check, Eye, Search, AlertCircle, Bookmark } from 'lucide-react';
+import { BookOpen, GraduationCap, Download, Check, Search, AlertCircle } from 'lucide-react';
 
 const docData = [
   { id: 'doc1', title: 'Neural Networks & Deep Learning', author: 'Dr. Sarah Chen', type: 'PDF', size: '4.2 MB', course: 'CS-301' },

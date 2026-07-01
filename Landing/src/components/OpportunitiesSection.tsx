@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Briefcase, MapPin, Check, Building, GraduationCap, Clock, Award, Star } from 'lucide-react';
+import { Briefcase, Award, Star } from 'lucide-react';
 
 const jobs = [
   { id: 'job4', title: 'Research Engineering Intern', company: 'Anthropic Labs', term: '6 Months', location: 'Remote', stipend: '$60/hr', mode: 'Remote', domain: 'AI Safety', icon: '🤖' },

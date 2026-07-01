@@ -1,9 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
-  FileText,
-  CheckCircle2,
-  Trophy,
   Upload,
   Check,
   Play,
@@ -16,6 +13,8 @@ import {
   MapPin,
   Send
 } from 'lucide-react';
+import { socket, connectSocket, disconnectSocket } from '../lib/socketClient';
+import { useAuth } from '@clerk/react';
 
 const slides = [
   {
@@ -100,13 +99,80 @@ export default function AcademicsSection() {
     }, 1200);
   };
 
-  // --- MCQ Mock States ---
+  // --- MCQ Adaptive States & Helpers ---
+  const { isSignedIn, getToken } = useAuth();
+  const [activeQuestion, setActiveQuestion] = useState({
+    id: 'default',
+    type: 'mcq',
+    question: 'Which database design normal form deals with removing multi-valued dependencies?',
+    options: ['1NF', '2NF', '3NF', '4NF'],
+    correctAnswer: '4NF'
+  });
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
-  const question = {
-    q: 'Which database design normal form deals with removing multi-valued dependencies?',
-    options: ['1NF', '2NF', '3NF', '4NF'],
-    correct: 3, // 4NF
+  const [isSubmitCorrect, setIsSubmitCorrect] = useState(false);
+  const [submittingTest, setSubmittingTest] = useState(false);
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    const fetchAdaptiveQuestion = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch('http://localhost:4000/api/test/questions', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        if (data.success && data.questions && data.questions.length > 0) {
+          const mcq = data.questions.find((q: any) => q.type === 'mcq');
+          if (mcq) {
+            setActiveQuestion(mcq);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load adaptive question:', err);
+      }
+    };
+
+    fetchAdaptiveQuestion();
+  }, [isSignedIn, getToken]);
+
+  const checkAnswer = async () => {
+    if (selectedOpt === null) return;
+    setIsAnswerChecked(true);
+
+    const selectedText = activeQuestion.options[selectedOpt];
+    const correct = selectedText.trim().toLowerCase() === activeQuestion.correctAnswer.trim().toLowerCase();
+    setIsSubmitCorrect(correct);
+
+    if (isSignedIn) {
+      setSubmittingTest(true);
+      try {
+        const token = await getToken();
+        await fetch('http://localhost:4000/api/test/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            difficulty: 'medium',
+            answers: [
+              {
+                questionId: activeQuestion.id,
+                answer: selectedText
+              }
+            ]
+          })
+        });
+      } catch (err) {
+        console.error('Failed to submit test answer:', err);
+      } finally {
+        setSubmittingTest(false);
+      }
+    }
   };
 
   // --- Compiler Sandbox States ---
@@ -135,8 +201,57 @@ export default function AcademicsSection() {
 
   // --- Attendance Mock States ---
   const [attendanceState, setAttendanceState] = useState<'OFFLINE' | 'SYNCING' | 'PRESENT'>('OFFLINE');
+
+  // WebSocket Integration Setup
+  useEffect(() => {
+    const guestId = `guest-${Math.random().toString(36).substring(2, 9)}`;
+    // Connect to WebSockets and join Academics-Zone room
+    connectSocket(guestId, 'Campus Guest', 'student', 'Academics-Zone');
+
+    const handleCampusAlert = (alertData: any) => {
+      setAlerts((prev) => [
+        {
+          id: alertData.id,
+          title: `[ALERT] ${alertData.title}`,
+          level: 'urgent',
+          time: 'Just now'
+        },
+        ...prev
+      ]);
+    };
+
+    const handleLiveAttendance = (attendanceData: any) => {
+      setAlerts((prev) => [
+        {
+          id: `attendance-${Date.now()}`,
+          title: `Telemetry: ${attendanceData.studentName} checked in.`,
+          level: 'info',
+          time: 'Just now'
+        },
+        ...prev
+      ]);
+    };
+
+    socket.on('campus-alert-received', handleCampusAlert);
+    socket.on('live-attendance-update', handleLiveAttendance);
+
+    return () => {
+      socket.off('campus-alert-received', handleCampusAlert);
+      socket.off('live-attendance-update', handleLiveAttendance);
+      disconnectSocket();
+    };
+  }, []);
+
   const triggerCheckIn = () => {
     setAttendanceState('SYNCING');
+    
+    // Broadcast check-in telemetry via WebSocket
+    socket.emit('sync-attendance-telemetry', {
+      courseId: 'CS-301',
+      studentName: 'Digital Twin Node',
+      rollNumber: 'CS-301-NODE'
+    });
+
     setTimeout(() => {
       setAttendanceState('PRESENT');
     }, 1500);
@@ -152,10 +267,14 @@ export default function AcademicsSection() {
   const broadcastAlert = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAlertText.trim()) return;
-    setAlerts(prev => [
-      { id: Date.now(), title: newAlertText, level: 'urgent', time: 'Just now' },
-      ...prev
-    ]);
+
+    // Dispatch the alert to the socket server to broadcast to all nodes
+    socket.emit('send-campus-alert', {
+      title: newAlertText,
+      message: newAlertText,
+      category: 'Campus Broadcast'
+    });
+
     setNewAlertText('');
   };
 
@@ -298,19 +417,22 @@ export default function AcademicsSection() {
                   {active.id === 'mcqs' && (
                     <div className="flex-grow flex flex-col justify-between py-4">
                       <div>
-                        <div className="text-xs text-white font-semibold leading-relaxed mb-3">{question.q}</div>
+                        <div className="text-xs text-white font-semibold leading-relaxed mb-3">{activeQuestion.question}</div>
                         <div className="grid grid-cols-2 gap-2">
-                          {question.options.map((opt, idx) => {
+                          {activeQuestion.options.map((opt, idx) => {
                             const isSel = selectedOpt === idx;
+                            const isCorrectOpt = opt.trim().toLowerCase() === activeQuestion.correctAnswer.trim().toLowerCase();
                             let style = 'bg-white/5 border-white/5 text-gray-300';
                             if (isSel) {
                               if (isAnswerChecked) {
-                                style = idx === question.correct 
+                                style = isSubmitCorrect 
                                   ? 'bg-green-500/20 border-green-500 text-green-400' 
                                   : 'bg-red-500/20 border-red-500 text-red-400';
                               } else {
                                 style = 'bg-purple-500/20 border-purple-500 text-purple-400';
                               }
+                            } else if (isAnswerChecked && isCorrectOpt) {
+                              style = 'bg-green-500/20 border-green-500/30 text-green-400/80';
                             }
                             return (
                               <button
@@ -326,7 +448,9 @@ export default function AcademicsSection() {
                       </div>
 
                       <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-2">
-                        <span className="text-[9px] text-gray-500 font-mono">Exam telemetries active</span>
+                        <span className="text-[9px] text-gray-500 font-mono">
+                          {submittingTest ? 'Saving evaluation...' : isAnswerChecked ? (isSubmitCorrect ? 'Correct Answer!' : 'Incorrect.') : 'Adaptive engine loaded'}
+                        </span>
                         <div className="flex gap-1.5">
                           <button
                             onClick={() => { setSelectedOpt(null); setIsAnswerChecked(false); }}
@@ -335,8 +459,8 @@ export default function AcademicsSection() {
                             Reset
                           </button>
                           <button
-                            onClick={() => { if (selectedOpt !== null) setIsAnswerChecked(true); }}
-                            disabled={selectedOpt === null}
+                            onClick={checkAnswer}
+                            disabled={selectedOpt === null || isAnswerChecked || submittingTest}
                             className="px-2.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-[9px] font-bold"
                           >
                             Check answer
